@@ -1,6 +1,11 @@
 package com.eyeinfra.test;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +30,26 @@ public class Test extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Welcome to the servlet");
+		
+		String url="jdbc:mysql://10.128.0.105:3306/mysqltest";
+		String u="twbyeon";
+		String p="password";
+		
+		String result = "";
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection(url, u, p);
+			PreparedStatement pst = con.prepareStatement("select * from users");
+			ResultSet rs = pst.executeQuery();
+			if(rs.next()) {
+				result = "db connected";
+			}
+		}catch(Exception e) {
+			result = e.getMessage();
+		}
+		
+		response.getWriter().append(result);
 	}
 
 	/**
